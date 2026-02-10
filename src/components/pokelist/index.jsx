@@ -1,40 +1,55 @@
 import { useState, useEffect } from "react";
-import PokeCard from "../pokeCard";
-
-import './index.css';
+import Classeur from "../classeur";
+import { pokemonService } from "../../services/pokemonService";
+import "./index.css";
 
 const PokeList = () => {
-    const [pokemons, setPokemons] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const [pokemons, setPokemons] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPrevPage: false,
+  });
 
-    useEffect(() => {
-        fetch("https://pokeapi.co/api/v2/pokemon?limit=30")
-            .then((response) => response.json())
-            .then((data) => {
-                console.log("Données reçues:", data);
-                setPokemons(data.results);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error("Erreur:", error);
-                setLoading(false);
-            });
-    }, []);
-
-    if (loading) {
-        return <p>Chargement...</p>
+  const fetchPokemons = async (page = 1) => {
+    setLoading(true);
+    try {
+      const response = await pokemonService.getPokemons(page, 20);
+      setPokemons(response.data);
+      setPagination(response.pagination);
+    } catch (err) {
+      console.error("Erreur:", err);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    return (
-        <div  className="poke-list-container">
-            <h2>Liste des Pokémon</h2>
-            <ul className="poke-list">
-                {pokemons.map((pokemon, index) => (
-                    <PokeCard key={index} pokemon={pokemon} />
-                ))}
-            </ul>
-        </div>
-    );
+  useEffect(() => {
+    fetchPokemons(1);
+  }, []);
+
+  const handlePageChange = (page) => {
+    fetchPokemons(page);
+  };
+
+  if (loading) {
+    return <p className="loading">Chargement...</p>;
+  }
+
+  return (
+    <div className="poke-list-container">
+      <Classeur
+        pokemons={pokemons}
+        currentPage={pagination.currentPage}
+        totalPages={pagination.totalPages}
+        hasNextPage={pagination.hasNextPage}
+        hasPrevPage={pagination.hasPrevPage}
+        onPageChange={handlePageChange}
+      />
+    </div>
+  );
 };
 
 export default PokeList;

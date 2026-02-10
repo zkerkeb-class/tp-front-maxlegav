@@ -1,33 +1,17 @@
-import { useEffect } from 'react';
+import { Link } from 'react-router'
 import './App.css'
 import Pokelist from './components/pokelist'
-import { Link, useNavigate } from 'react-router'
 
 function App() {
-  const navigate = useNavigate();
-  console.log(navigate);
-
-  useEffect(() => {
-    console.log("App component mounted");
-
-    // setTimeout(() =>
-      // redirectToDetails()
-      // , 5000);
-
-  }, []);
-
-  const redirectToDetails = () => {
-    navigate('/pokemonDetails');
-  }
-
   return (
-    <div>
-
-      <Link to="/pokemonDetails">Voir les détails du Pokémon</Link>
-      <Pokelist></Pokelist>
+    <div className="app-container">
+      <header className="app-header">
+        <h1>Classeur Pokemon</h1>
+        <Link to="/create" className="create-btn">+ Nouveau Pokemon</Link>
+      </header>
+      <Pokelist />
     </div>
   )
-
 }
 
 export default App

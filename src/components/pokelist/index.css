@@ -1,11 +1,10 @@
-.poke-list-container{
+.poke-list-container {
     display: flex;
     flex-direction: column;
-
+    gap: 24px;
 }
 
-.poke-list{
-    display: flex;
-    flex-wrap: wrap;
-    gap:8px;
+.loading {
+    text-align: center;
+    padding: 40px;
 }
